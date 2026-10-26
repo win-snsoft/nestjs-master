@@ -3,6 +3,9 @@
 /node_modules
 /build
 
+# generated openapi specs
+apps/*/src/openapi/openapi.json
+
 # TypeScript build cache
 *.tsbuildinfo
 

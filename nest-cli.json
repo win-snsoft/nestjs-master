@@ -73,6 +73,16 @@
         "tsConfigPath": "apps/messaging-api/tsconfig.app.json"
       }
     },
+    "messaging-api-openapi": {
+      "type": "application",
+      "root": "apps/messaging-api",
+      "entryFile": "openapi/generate",
+      "sourceRoot": "apps/messaging-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/messaging-api/tsconfig.app.json",
+        "deleteOutDir": false
+      }
+    },
     "viber-consumer-promotexter": {
       "type": "application",
       "root": "apps/viber-consumer-promotexter",
