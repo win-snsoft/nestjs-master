@@ -27,7 +27,7 @@ export class ViberLogConsumerService implements OnModuleInit, OnApplicationShutd
 
   async onModuleInit() {
     await this.subscribe();
-    this.start();
+    void this.start();
   }
 
   async onApplicationShutdown(signal?: string) {

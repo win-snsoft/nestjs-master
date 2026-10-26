@@ -20,4 +20,4 @@ async function bootstrap() {
   await app.listen(env.PORT);
   logger.log(`Viber Promotexter consumer is running on port ${env.PORT}`);
 }
-bootstrap();
+await bootstrap();

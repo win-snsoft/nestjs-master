@@ -14,4 +14,4 @@ async function generate() {
   await app.close();
 }
 
-generate();
+await generate();
