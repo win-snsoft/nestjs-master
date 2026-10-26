@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
 import { REDIS_TOKEN } from '@application/connections/index.js';
-import { EgressIpService } from '@application/modules/egress-ip/index.js';
+import { IpDiscoveryService } from '@application/modules/ip-discovery/index.js';
 import {
   LimiterCounter,
   LimiterGrant,
@@ -38,7 +38,7 @@ export class LimiterService {
   constructor(
     @Inject(REDIS_TOKEN.PRIMARY) private readonly redis: Redis,
     private readonly poolCache: LimiterPoolCache,
-    private readonly egressIp: EgressIpService,
+    private readonly ipDiscovery: IpDiscoveryService,
   ) {}
 
   async acquire(poolId: string, points = LIMITER_DEFAULT_POINTS): Promise<LimiterGrant> {
@@ -66,7 +66,7 @@ export class LimiterService {
   private async toKey(poolId: string, rule: LimiterRule) {
     const key = `pool-id:${poolId}:${rule.window}`;
     if (rule.strategy === 'Shared') return key;
-    return `${key}:Ip:${await this.egressIp.get()}`;
+    return `${key}:Ip:${await this.ipDiscovery.getEgressIp()}`;
   }
 
   private async consumeAll(counters: LimiterCounter[], points: number): Promise<LimiterGrant> {
