@@ -16,8 +16,7 @@ async function bootstrap() {
   const logger = new Logger('Server');
   app.flushLogs();
 
-  app.listen(3000).then(() => {
-    logger.log('Cron service is running');
-  });
+  await app.listen(3000);
+  logger.log('Cron service is running');
 }
-bootstrap();
+await bootstrap();

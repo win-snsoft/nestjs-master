@@ -23,4 +23,4 @@ async function bootstrap() {
   }
 }
 
-bootstrap();
+await bootstrap();

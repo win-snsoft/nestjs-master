@@ -29,11 +29,10 @@ async function bootstrap() {
   app.enableVersioning({ type: VersioningType.URI });
   await setupApiDocumentation(app);
 
-  app.listen(env.PORT).then(() => {
-    logger.log(`Server is running`, { url: `http://localhost:${env.PORT}` });
-    logger.log(`APIs documentation is hosted`, { url: `http://localhost:${env.PORT}/reference` });
-    logger.log('LLM Text is hosted', { url: `http://localhost:${env.PORT}/llms.txt` });
-  });
+  await app.listen(env.PORT);
+  logger.log(`Server is running`, { url: `http://localhost:${env.PORT}` });
+  logger.log(`APIs documentation is hosted`, { url: `http://localhost:${env.PORT}/reference` });
+  logger.log('LLM Text is hosted', { url: `http://localhost:${env.PORT}/llms.txt` });
 }
 
 async function setupApiDocumentation(app: INestApplication) {
@@ -60,4 +59,4 @@ async function setupApiDocumentation(app: INestApplication) {
   http.get('/llms.txt', (req: Request, res: Response) => res.type('txt').send(markdown));
 }
 
-bootstrap();
+await bootstrap();

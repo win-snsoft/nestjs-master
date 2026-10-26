@@ -90,7 +90,7 @@ pnpm run start:<app-name>       # Eg: pnpm run start:messaging-api
 ## Quality checks
 
 ```bash
-pnpm run lint        # ESLint, including import-boundary rules
+pnpm run lint        # oxlint (type-aware)
 pnpm run format      # Prettier
 pnpm run typecheck   # TypeScript across the workspace
 pnpm test            # Jest
