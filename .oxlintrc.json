@@ -1,11 +1,176 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "jsPlugins": ["eslint-plugin-boundaries"],
+  "settings": {
+    "import/resolver": {
+      "typescript": { "project": "./tsconfig.json" }
+    },
+    "boundaries/elements": [
+      { "type": "app", "pattern": "apps/*", "capture": ["app"], "partialMatch": false },
+      {
+        "type": "module",
+        "pattern": "libs/application/src/modules/*",
+        "capture": ["module"],
+        "partialMatch": false
+      },
+      {
+        "type": "integration",
+        "pattern": "libs/application/src/integrations/*",
+        "capture": ["provider"],
+        "partialMatch": false
+      },
+      {
+        "type": "connection",
+        "pattern": "libs/application/src/connections",
+        "partialMatch": false
+      },
+      { "type": "config", "pattern": "libs/application/src/config", "partialMatch": false },
+      { "type": "application-root", "pattern": "libs/application/src", "partialMatch": false },
+      {
+        "type": "framework",
+        "pattern": "libs/framework/src/*",
+        "capture": ["concern"],
+        "partialMatch": false
+      }
+    ]
+  },
   "rules": {
     "typescript/no-explicit-any": "off",
     "typescript/no-floating-promises": "error",
-    "typescript/no-misused-spread": "allow"
+    "typescript/no-misused-spread": "allow",
+    "typescript/no-unsafe-argument": "warn",
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "no-duplicate-imports": "error",
+    "typescript/no-unsafe-assignment": "error",
+    "typescript/no-unsafe-member-access": "error",
+    "typescript/no-unsafe-call": "error",
+    "typescript/no-unsafe-return": "error",
+    "typescript/no-unsafe-function-type": "error",
+    "typescript/no-unsafe-enum-comparison": "error",
+    "typescript/ban-ts-comment": "error",
+    "typescript/no-misused-promises": "error",
+    "typescript/require-await": "error",
+    "typescript/await-thenable": "error",
+    "typescript/unbound-method": "error",
+    "typescript/restrict-template-expressions": "error",
+    "typescript/restrict-plus-operands": "error",
+    "typescript/no-base-to-string": "error",
+    "typescript/only-throw-error": "error",
+    "typescript/prefer-promise-reject-errors": "error",
+    "typescript/no-unnecessary-type-assertion": "error",
+    "typescript/no-redundant-type-constituents": "error",
+    "typescript/no-require-imports": "error",
+    "typescript/no-namespace": "error",
+    "typescript/no-empty-object-type": ["error", { "allowInterfaces": "with-single-extends" }]
   },
   "env": {
     "node": true
-  }
+  },
+  "overrides": [
+    {
+      "files": ["apps/**/*.ts", "libs/**/*.ts"],
+      "rules": {
+        "boundaries/dependencies": [
+          "error",
+          {
+            "default": "disallow",
+            "policies": [
+              {
+                "from": { "element": { "type": "app" } },
+                "allow": {
+                  "to": {
+                    "element": {
+                      "types": {
+                        "anyOf": ["application-root", "module", "connection", "config", "framework"]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "from": { "element": { "type": "application-root" } },
+                "allow": {
+                  "to": {
+                    "element": {
+                      "types": { "anyOf": ["module", "connection", "framework", "config"] }
+                    }
+                  }
+                }
+              },
+              {
+                "from": { "element": { "type": "module" } },
+                "allow": {
+                  "to": {
+                    "element": {
+                      "types": {
+                        "anyOf": ["module", "integration", "connection", "config", "framework"]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "from": { "element": { "type": "integration" } },
+                "allow": { "to": { "element": { "type": "framework" } } }
+              },
+              {
+                "from": { "element": { "type": "connection" } },
+                "allow": { "to": { "element": { "types": { "anyOf": ["config", "framework"] } } } }
+              },
+              {
+                "from": { "element": { "type": "config" } },
+                "allow": { "to": { "element": { "type": "framework" } } }
+              },
+              {
+                "from": { "element": { "type": "framework" } },
+                "allow": { "to": { "element": { "type": "framework" } } }
+              },
+              {
+                "disallow": { "to": { "element": { "fileInternalPath": "!index.ts" } } },
+                "message": "Import through the barrel (index.ts) only, never a nested path"
+              },
+              {
+                "allow": {
+                  "to": {
+                    "element": {
+                      "type": "framework",
+                      "captured": { "concern": "trace" },
+                      "fileInternalPath": "register.ts"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["libs/framework/src/**/*.ts"],
+      "rules": {
+        "typescript/no-unsafe-argument": "off",
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-unsafe-member-access": "off",
+        "typescript/no-unsafe-call": "off",
+        "typescript/no-unsafe-return": "off",
+        "typescript/no-unsafe-function-type": "off",
+        "typescript/ban-ts-comment": "off",
+        "no-unused-vars": "warn"
+      }
+    },
+    {
+      "files": ["libs/application/src/modules/**/*.ts"],
+      "rules": {
+        "typescript/no-explicit-any": "error",
+        "typescript/no-unsafe-argument": "error",
+        "typescript/no-unsafe-type-assertion": "error"
+      }
+    },
+    {
+      "files": ["libs/application/src/**/*.ts"],
+      "rules": {
+        "no-console": "error"
+      }
+    }
+  ]
 }
